@@ -33,6 +33,7 @@ PRESETS: dict[str, Preset] = {
     },
     "youtube": {},
     "youtube-audio": {
+        "format": "(bestaudio[acodec^=opus]/bestaudio)/best",
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
