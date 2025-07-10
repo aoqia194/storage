@@ -1,10 +1,14 @@
 [project]
 name = "steam-collection-append"
+version = "1.0.0"
 description = "Allows for adding a list of workshop items to a collection."
 authors = [{ name = "aoqia", email = "aoqia@aoqia.dev" }]
 readme = "README.md"
 requires-python = ">=3.13,<4.0"
-dependencies = ["steam @ git+https://github.com/solsticegamestudios/steam.git", "inquirerpy (>=0.3.4,<0.4.0)"]
+dependencies = [
+    "steam @ git+https://github.com/solsticegamestudios/steam.git",
+    "inquirerpy (>=0.3.4,<0.4.0)",
+]
 
 [tool.poetry]
 package-mode = false
