@@ -1,8 +1,11 @@
-# Everything
+# Ignore everything
 /*
 
-!/steam
-!/yt-dlp
+# Include src folders
+!/src
+
+# Exclude out folders
+/src/**/out
 
 !/LICENSE
 !/README.md
