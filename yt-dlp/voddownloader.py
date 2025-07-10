@@ -33,7 +33,7 @@ PRESETS: dict[str, Preset] = {
     },
     "youtube": {},
     "youtube-audio": {
-        "format": "(bestaudio[acodec^=opus]/bestaudio)/best",
+        "format": "bestaudio/best",
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -48,7 +48,7 @@ PRESETS: dict[str, Preset] = {
     },
     "twitch-audio": {
         "throttledratelimit": 2000000,  # 2 Mbps
-        "format": "(bestaudio[acodec^=opus]/bestaudio)/best",
+        "format": "bestaudio/best",
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
