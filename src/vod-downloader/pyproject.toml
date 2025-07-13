@@ -4,8 +4,8 @@ version = "1.0.0"
 description = ""
 authors = [{ name = "aoqia", email = "aoqia@aoqia.dev" }]
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.13,<4.0"
+dependencies = ["inquirerpy (>=0.3.4,<0.4.0)", "yt-dlp (>=2025.6.30,<2026.0.0)"]
 
 [tool.poetry]
 package-mode = false

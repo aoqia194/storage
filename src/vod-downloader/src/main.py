@@ -8,10 +8,14 @@ from InquirerPy import inquirer
 from yt_dlp import YoutubeDL  # type: ignore
 
 
-type Preset = dict[str, str | int | bool | list | dict | Preset]
+type Preset = dict[str, str | int | bool | list | dict | tuple | Preset]
 PRESETS: dict[str, Preset] = {
     "_default": {
         "concurrent_fragment_downloads": 3,
+        # "external_downloader": {
+        #     "default": "aria2c"
+        # },
+        "merge_output_format": "mkv",
         "outtmpl": {
             "default": os.getcwd().replace("\\", "/")
             + r"/%(webpage_url_domain)s/%(uploader_id)s/"
@@ -25,38 +29,32 @@ PRESETS: dict[str, Preset] = {
                 "key": "FFmpegMetadata",
             }
         ],
-        "ratelimit": 6250000,  # 50 Mbps
+        "ratelimit": 6250000,  # 6.25 MBps
+        "restrictfilenames": True,
         "writeannotations": True,
         "writedescription": True,
         "writeinfojson": True,
-        "merge_output_format": "mkv",
+    },
+    "_audio-only": {
+        "format": "bestaudio/best",
+        "postprocessors": [
+            {
+                "key": "FFmpegExtractAudio",
+                "nopostoverwrites": False,
+                "preferredcodec": "best",
+                "preferredquality": "0",
+            },
+        ],
     },
     "youtube": {},
     "youtube-audio": {
-        "format": "bestaudio/best",
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "nopostoverwrites": False,
-                "preferredcodec": "best",
-                "preferredquality": "0",
-            },
-        ],
+        "_inherits": ["_audio-only"],
     },
     "twitch": {
-        "throttledratelimit": 1000000,  # 1 Mbps
+        "throttledratelimit": 1000000,  # 1 MBps
     },
     "twitch-audio": {
-        "throttledratelimit": 2000000,  # 2 Mbps
-        "format": "bestaudio/best",
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "nopostoverwrites": False,
-                "preferredcodec": "best",
-                "preferredquality": "0",
-            },
-        ],
+        "_inherits": ["_audio-only", "twitch"],
     },
     "kick": {
         "outtmpl": {
@@ -66,37 +64,48 @@ PRESETS: dict[str, Preset] = {
         },
     },
     "kick-audio": {
+        "_inherits": ["_audio-only", "kick"],
+    },
+    "bunny": {
+        "concurrent_fragment_downloads": 4,
+        "cookiesfrombrowser": ("firefox", os.environ["BROWSER_PROFILE"], None, None),
+        "http_headers": {
+            "Referer": "https://iframe.mediadelivery.net/",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0)"
+            "Gecko/20100101 Firefox/140.0"
+        },
+        "nopart": True,
         "outtmpl": {
             "default": os.getcwd().replace("\\", "/")
-            + r"/%(webpage_url_domain)s/%(channel)s/"
-            r"[%(upload_date>%Y-%m-%d)s] [%(id)s] %(title)s.%(ext)s"
+            + r"/[%(upload_date>%Y-%m-%d)s] %(title)s.%(ext)s"
         },
-        "format": "(bestaudio[acodec^=opus]/bestaudio)/best",
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "nopostoverwrites": False,
-                "preferredcodec": "best",
-                "preferredquality": "0",
-            },
-        ],
+        "ratelimit": 8250000, # 8.25 MBps
     },
 }
-PRESET_NAMES = [k for k in PRESETS if k != "_default"]
+
+PRESET_NAMES = [k for k in PRESETS if not k.startswith("_")]
 
 
 def clear():
     return os.system("cls" if os.name == "nt" else "clear")
 
 
+def construct_presets():
+    for key in PRESET_NAMES:
+        preset = PRESETS["_default"].copy()
+
+        inherited: list[str] = PRESETS[key].get("_inherits", [])  # type: ignore
+        for p in inherited:
+            preset |= PRESETS[p]
+        preset |= PRESETS[key]
+
+        preset.pop("_inherits", None)
+        PRESETS[key] = preset
+
+
 def main():
     clear()
-
-    # Merge default preset with others.
-    for key in PRESETS:
-        if key == "_default" or PRESETS[key].get("no_defaults"):
-            continue
-        PRESETS[key] = PRESETS["_default"] | PRESETS[key]
+    construct_presets()
 
     preset: str = inquirer.select(  # type: ignore
         message="Select yt-dlp preset:",
