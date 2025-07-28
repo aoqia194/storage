@@ -1,7 +1,7 @@
 # Ignore everything
 /*
 
-# Include src folders
+!/imhex
 !/scripts
 
 # Exclude out folders
