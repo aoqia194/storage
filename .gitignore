@@ -2,10 +2,10 @@
 /*
 
 # Include src folders
-!/src
+!/scripts
 
 # Exclude out folders
-/src/**/out
+/**/out
 
 !/LICENSE
 !/README.md
