@@ -1,4 +1,4 @@
-/// Author: aoqia (she/her) <aoqia@aoqia.dev>
+/// Author: aoqia <aoqia@aoqia.dev>
 
 #pragma description Fmod Sound Bank
 #pragma magic [ 46 53 42 ?? ] @ 0x00

@@ -1,6 +1,6 @@
-/// Author: aoqia (she/her) <aoqia@aoqia.dev>
+/// Author: aoqia <aoqia@aoqia.dev>
 
-#pragma description Chromeengine Sound Bank
+#pragma description Chromeengine 6 Sound Bank
 #pragma magic [ 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ] @ 0x00
 #pragma endian little
 
