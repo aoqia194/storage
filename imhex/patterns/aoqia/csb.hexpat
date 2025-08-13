@@ -73,6 +73,7 @@ namespace csb {
                 + " This is different from an actual FSB header!")
         ]];
         
+        // TODO: FIXME: USE OFFSET IN HEADER!!! ITS INCORRECT OTHERWISE.
         Vfsb vfsbFiles[header.vfsbCount] [[
             name("vFSB files"),
             comment("FSB files that are embedded in the CSB."

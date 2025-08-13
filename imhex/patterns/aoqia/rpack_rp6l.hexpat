@@ -17,12 +17,15 @@ import type.magic;
 
 namespace rpack {
     enum FileType : u8 {
-        MSH = 16,
-        TEX = 32,
-        SHD = 48,
-        ANM = 64,
+        MESH = 16,
+        TEXTURE = 32,
+        MATERIAL = 48,
+        // ANM = 64,
+        ANM2 = 64,
         ANM2 = 66,
         FX = 80,
+        SWF = 97,
+        AUDIO = 101,
     };
     
     struct FileName : std::IIndexed {
@@ -75,6 +78,8 @@ namespace rpack {
        u32 unpackedSize;
        /// Excluding 0x00.
        u32 packedSize;
+       /// I have no idea what this is. It's not used half the time.
+       /// I believe the name is invalid/not representing the correct thing.
        u32 partCount;
     };
     
@@ -89,7 +94,7 @@ namespace rpack {
         u8 sectionType = parent.parent.sections[sectionIdx].filetype;
         u32 sectionOffset = parent.parent.sections[sectionIdx].offset;
         
-        if (sectionType == rpack::FileType::TEX) {
+        if (sectionType == rpack::FileType::TEXTURE) {
             // TODO: Handle texture-specific stuff here.
         } else {
             u8 filedata[packedSize > 0 ? packedSize : unpackedSize] @ sectionOffset + partOffset;
