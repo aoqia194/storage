@@ -18,5 +18,5 @@ FSB files are used by FMOD. This is a very basic pattern to get the point across
 
 ## Scripts
 
-- [vod-downloader](scripts/src/vod-downloader)
-- [steam-collection-append](scripts/src/steam-collection-append)
+- [vod-downloader](scripts/python/vod-downloader)
+- [steam-collection-append](scripts/python/steam-collection-append)

@@ -29,7 +29,6 @@ PRESETS: dict[str, Preset] = {
                 "key": "FFmpegMetadata",
             }
         ],
-        "ratelimit": 6250000,  # 6.25 MBps
         "restrictfilenames": True,
         "writeannotations": True,
         "writedescription": True,
@@ -79,7 +78,6 @@ PRESETS: dict[str, Preset] = {
             "default": os.getcwd().replace("\\", "/")
             + r"/[%(upload_date>%Y-%m-%d)s] %(title)s.%(ext)s"
         },
-        "ratelimit": 8250000, # 8.25 MBps
     },
 }
 
