@@ -85,7 +85,12 @@ def main():
             modid = ""
 
             logger.debug("Reading mod.info file")
-            with open(submod.joinpath("mod.info"), "r", encoding="utf-8") as f:
+            modinfo = submod.joinpath("mod.info")
+            if not modinfo.exists:
+                logger.warning("mod.info file doesn't exist, skipping submod")
+                continue
+
+            with open(modinfo, "r", encoding="utf-8") as f:
                 for line in f.readlines():
                     if line.startswith("id="):
                         modid = line.split("=")[1].strip()
