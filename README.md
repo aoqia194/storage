@@ -20,3 +20,4 @@ FSB files are used by FMOD. This is a very basic pattern to get the point across
 
 - [vod-downloader](scripts/src/vod-downloader)
 - [steam-collection-append](scripts/src/steam-collection-append)
+- [zomboid-modlist-export](scripts/python/zomboid-modlist-export)

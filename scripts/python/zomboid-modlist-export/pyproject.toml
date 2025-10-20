@@ -1,0 +1,17 @@
+[project]
+name = "zomboid-modlist-export"
+version = "0.1.0"
+description = "Helps convert between a Project Zomboid mod list (using in-game mod ids) and a list of Project Zomboid workshop mods (Steam workshop ids)."
+authors = [{ name = "aoqia", email = "aoqia@aoqia.dev" }]
+license = { text = "GPLv3" }
+readme = "README.md"
+requires-python = ">=3.13,<4.0"
+dependencies = ["loguru (>=0.7.3,<0.8.0)", "pyperclip (>=1.11.0,<2.0.0)"]
+
+[tool.poetry]
+package-mode = false
+packages = [{ include = "vod_downloader", from = "src" }]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
