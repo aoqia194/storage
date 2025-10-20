@@ -33,14 +33,18 @@ def get_mod_ids() -> list[str]:
     modids = []
     if len(sys.argv) == 1 or sys.argv[1] == "":
         logger.info("Enter a list of mod ids (separated by semicolon)")
-        modids = input("$: ").strip().split(";")
+        for m in input("$: ").strip().split(";"):
+            if len(m) > 0:
+                modids.append(m)
     else:
-        modids = sys.argv[1].strip().split(";")
+        for m in sys.argv[1].strip().split(";"):
+            if len(m) > 0:
+                modids.append(m)
         logger.info("Found mod list in first script arg!")
 
     if len(modids) <= 0:
         logger.error("Mod ids list was empty despite asking explicitly for a list.")
-        sys.exit(1)
+        return []
 
     return modids
 
@@ -54,6 +58,9 @@ def main():
 
     input_mod_ids = get_mod_ids()
     logger.debug("Input mod ids: {}", input_mod_ids)
+    if len(input_mod_ids) <= 0:
+        logger.error("Input mod id list was empty.")
+        return
 
     game_path = get_game_path()
     logger.debug("game_path = {}", game_path)
@@ -62,7 +69,7 @@ def main():
 
     if not workshop_path.exists():
         logger.error("Steam workshop path () doesn't exist!")
-        sys.exit(1)
+        return
 
     workshopid_modid_map: dict[str, list[str]] = {}
     for dir in workshop_path.iterdir():
@@ -118,4 +125,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException as e:
+        logger.critical(e)
