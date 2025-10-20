@@ -29,7 +29,7 @@ PRESETS: dict[str, Preset] = {
                 "key": "FFmpegMetadata",
             }
         ],
-        "ratelimit": 6250000,  # 6.25 MBps
+        # "ratelimit": 37500000,  # 37.5 MBps
         "restrictfilenames": True,
         "writeannotations": True,
         "writedescription": True,
@@ -51,7 +51,8 @@ PRESETS: dict[str, Preset] = {
         "_inherits": ["_audio-only"],
     },
     "twitch": {
-        "throttledratelimit": 1000000,  # 1 MBps
+        "concurrent_fragment_downloads": 6,
+        # "throttledratelimit": 1000000,  # 1 MBps
     },
     "twitch-audio": {
         "_inherits": ["_audio-only", "twitch"],
@@ -66,20 +67,23 @@ PRESETS: dict[str, Preset] = {
     "kick-audio": {
         "_inherits": ["_audio-only", "kick"],
     },
-    "bunny": {
+    "mediadelivery": {
         "concurrent_fragment_downloads": 4,
-        "cookiesfrombrowser": ("firefox", os.environ["BROWSER_PROFILE"], None, None),
+        "cookiesfrombrowser": ("brave", os.environ["BROWSER_PROFILE"], None, None),
         "http_headers": {
             "Referer": "https://iframe.mediadelivery.net/",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:140.0)"
-            "Gecko/20100101 Firefox/140.0"
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+            " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
         },
         "nopart": True,
         "outtmpl": {
             "default": os.getcwd().replace("\\", "/")
             + r"/[%(upload_date>%Y-%m-%d)s] %(title)s.%(ext)s"
         },
-        "ratelimit": 8250000, # 8.25 MBps
+        # "ratelimit": 8250000,  # 8.25 MBps
+    },
+    "mediadelivery-bunny": {
+        "_inherits": ["mediadelivery"],
     },
 }
 
