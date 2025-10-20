@@ -10,7 +10,7 @@ dependencies = ["loguru (>=0.7.3,<0.8.0)", "pyperclip (>=1.11.0,<2.0.0)"]
 
 [tool.poetry]
 package-mode = false
-packages = [{ include = "vod_downloader", from = "src" }]
+packages = [{ include = "zomboid-modlist-export", from = "src" }]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
