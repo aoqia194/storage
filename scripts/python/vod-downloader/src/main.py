@@ -3,10 +3,11 @@
 # pylint: disable=consider-using-dict-items
 
 import os
+from getpass import getpass
 
+import keyring
 from InquirerPy import inquirer
 from yt_dlp import YoutubeDL  # type: ignore
-
 
 type Preset = dict[str, str | int | bool | list | dict | tuple | Preset]
 PRESETS: dict[str, Preset] = {
@@ -17,8 +18,7 @@ PRESETS: dict[str, Preset] = {
         # },
         "merge_output_format": "mkv",
         "outtmpl": {
-            "default": os.getcwd().replace("\\", "/")
-            + r"/%(webpage_url_domain)s/%(uploader_id)s/"
+            "default": os.getcwd().replace("\\", "/") + r"/%(webpage_url_domain)s/%(uploader_id)s/"
             r"[%(upload_date>%Y-%m-%d)s] [%(id)s] %(title)s.%(ext)s"
         },
         "postprocessors": [
@@ -29,6 +29,7 @@ PRESETS: dict[str, Preset] = {
                 "key": "FFmpegMetadata",
             }
         ],
+        "ratelimit": 999999999,
         # "ratelimit": 37500000,  # 37.5 MBps
         "restrictfilenames": True,
         "writeannotations": True,
@@ -51,7 +52,7 @@ PRESETS: dict[str, Preset] = {
         "_inherits": ["_audio-only"],
     },
     "twitch": {
-        "concurrent_fragment_downloads": 6,
+        "concurrent_fragment_downloads": 20,
         # "throttledratelimit": 1000000,  # 1 MBps
     },
     "twitch-audio": {
@@ -59,17 +60,24 @@ PRESETS: dict[str, Preset] = {
     },
     "kick": {
         "outtmpl": {
-            "default": os.getcwd().replace("\\", "/")
-            + r"/%(webpage_url_domain)s/%(channel)s/"
+            "default": os.getcwd().replace("\\", "/") + r"/%(webpage_url_domain)s/%(channel)s/"
             r"[%(upload_date>%Y-%m-%d)s] [%(id)s] %(title)s.%(ext)s"
         },
     },
     "kick-audio": {
         "_inherits": ["_audio-only", "kick"],
     },
+    "rplay": {
+        "concurrent_fragment_downloads": 10,
+        "outtmpl": {
+            "default": os.getcwd().replace("\\", "/") + r"/%(webpage_url_domain)s/%(uploader)s/"
+            r"[%(upload_date>%Y-%m-%d)s] [%(id)s] %(title)s.%(ext)s"
+        },
+    },
+    "rplay-audio": {"_inherits": ["_audio-only", "rplay"]},
     "mediadelivery": {
         "concurrent_fragment_downloads": 4,
-        "cookiesfrombrowser": ("brave", os.environ["BROWSER_PROFILE"], None, None),
+        "cookiesfrombrowser": ("vivaldi", os.environ["BROWSER_PROFILE"], None, None),
         "http_headers": {
             "Referer": "https://iframe.mediadelivery.net/",
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
@@ -126,27 +134,43 @@ def main():
     options = PRESETS[preset]
 
     ratelimit: str = inquirer.text(  # type: ignore
-        message="Enter a custom rate limit (in bytes/s), "
-        f"or leave blank for default ({options["ratelimit"]}):"
+        message="Enter a custom rate limit (in bytes/s), or leave blank for none:"
     ).execute()
     if ratelimit != "":
         options["ratelimit"] = int(ratelimit.strip())
+    else:
+        options.pop("ratelimit", None)
 
-    url_text = ""
-    if "twitch" in preset or "kick" in preset:
-        url_text = "VOD "
-    elif "youtube" in preset:
-        url_text = "video "
+    if "rplay" in preset:
+        requestor_oid = keyring.get_password("vod-downloader", "RPLAY_REQUESTOR_OID")
+        if not requestor_oid:
+            requestor_oid = getpass("RPLAY requestorOid: ")
+            if not requestor_oid:
+                raise RuntimeError("Failed to get RPLAY requestorOid")
+
+            keyring.set_password("vod-downloader", "RPLAY_REQUESTOR_OID", requestor_oid)
+
+        refresh_token = keyring.get_password("vod-downloader", "RPLAY_REFRESH_TOKEN")
+        if not refresh_token:
+            refresh_token = getpass("RPLAY refresh token: ")
+            if not refresh_token:
+                raise RuntimeError("Failed to get RPLAY refresh token")
+
+            keyring.set_password("vod-downloader", "RPLAY_REFRESH_TOKEN", refresh_token)
+
+        if requestor_oid and refresh_token:
+            options["username"] = requestor_oid
+            options["password"] = refresh_token
 
     url_string: str = inquirer.text(  # type: ignore
-        message=f"Enter {url_text}URLs (comma seperated):",
+        message=f"Enter URLs (comma seperated):",
     ).execute()
     if not url_string or len(url_string) == 0:
         print("No URLs provided. Exiting.")
         return
 
     urls = url_string.split(",")
-    with YoutubeDL(options) as ydl:
+    with YoutubeDL(options) as ydl:  # type: ignore
         ydl.download(urls)
 
 

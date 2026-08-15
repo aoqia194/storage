@@ -4,14 +4,13 @@ version = "1.0.0"
 description = ""
 authors = [{ name = "aoqia", email = "aoqia@aoqia.dev" }]
 readme = "README.md"
-requires-python = ">=3.13,<4.0"
-dependencies = ["inquirerpy (>=0.3.4,<0.4.0)", "yt-dlp (>=2025.6.30,<2026.0.0)"]
+requires-python = ">=3.13"
+dependencies = [
+    "inquirerpy>=0.3.4",
+    "keyring>=25.7.0",
+    "pycryptodomex>=3.23.0",
+    "yt-dlp",
+]
 
-[tool.poetry]
-package-mode = false
-packages = [{ include = "vod_downloader", from = "src" }]
-
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv.sources]
+yt-dlp = { git = "https://github.com/c-basalt/yt-dlp", rev = "rplaylive" }
